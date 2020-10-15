@@ -1,0 +1,76 @@
+%TMPL:DEF{"newwebform"}%%{}%
+%TMPL:P{"newwebform::start"}%%{}%
+%TMPL:P{"newwebform::namestep"}%%{}%
+%TMPL:P{"newwebform::summarystep"}%%{}%
+%TMPL:P{"newwebform::parentstep"}%%{}%
+%TMPL:P{"newwebform::templatestep"}%%{}%
+%TMPL:P{"newwebform::moresettingsstep"}%%{}%
+%TMPL:P{"newwebform::buttons"}%%{}%
+%TMPL:P{"newwebform::end"}%%{}%
+%TMPL:END%
+
+%TMPL:DEF{"newwebform::start"}%<form id="createNewWeb" class="jqAjaxForm" name="admin" action="%SCRIPTURLPATH{"jsonrpc"}%/WebCreatorPlugin/create" method="post" data-message="%MAKETEXT{"Creating Web"}%">
+<div class="foswikiFormSteps">%TMPL:END%
+
+%TMPL:DEF{"newwebform::end"}%</div>
+</form>%JQREQUIRE{"ajaxform, select2"}%%TMPL:END%
+
+%TMPL:DEF{"newwebform::buttons"}%<hr />
+<div class="foswikiFormStep">
+<input type="submit" class="foswikiSubmit" value="%MAKETEXT{"Submit"}%" />
+<a href="%SCRIPTURLPATH{"view"}%/%WEB%/%TOPIC%" class="foswikiButtonCancel {icon:'ui-icon-cancel'}">%MAKETEXT{"Cancel"}%</a>
+</div>%TMPL:END%
+
+%TMPL:DEF{"newwebform::namestep"}%<div class="foswikiFormStep">
+  <h3>%MAKETEXT{"Web name"}%:</h3>
+  <input name="newweb" class="foswikiInputField required" type="text" value="%URLPARAM{"newweb"}%" size="60" />
+  <div class="foswikiFormDescription">
+    %MAKETEXT{"The name must start with an upper case letter, followed by upper or lower case letters or numbers."}%
+    %MAKETEXT{"Specify a short name to avoid long URLs."}%
+  </div>
+</div>%TMPL:END%
+
+%TMPL:DEF{"newwebform::summarystep"}%<div class="foswikiFormStep">
+  <h3>%MAKETEXT{"Summary"}%:</h3>
+  <input type="text" class="foswikiInputField" name="WEBSUMMARY" value="" size="60" />
+  <div class="foswikiFormDescription">
+    %MAKETEXT{"Enter a short description of the web."}%
+  </div>
+</div>%TMPL:END%
+
+%TMPL:DEF{"newwebform::parentstep"}%<div class="foswikiFormStep">
+  <h3>%MAKETEXT{"Parent web"}%:</h3>
+  <select name="parentweb" class="jqSelect2" data-width="27em" data-allow-clear="true" data-placeholder="%MAKETEXT{"none"}%" size="1">
+    <option></option>
+    %FLEXWEBLIST{ 
+      format="<option $marker>$web</option>" 
+      marker="selected"
+      webs="public" 
+      exclude="Applications.*"
+      selection="" 
+      separator="$n"
+    }%
+  </select>
+  <div class="foswikiFormDescription">
+    %MAKETEXT{"Specify the parent web that the new web will be a subweb off."}%
+  </div>
+</div>%TMPL:END%
+
+%TMPL:DEF{"newwebform::templatestep"}%<div class="foswikiFormStep">
+  <h3>%MAKETEXT{"Template web"}%:</h3>
+  <select name="templateweb" class="jqSelect2" data-width="27em">
+    %FLEXWEBLIST{ 
+      format="<option $marker>$name</option>" 
+      marker="selected"
+      webs="webtemplate" 
+      include="_.*"
+      exclude=".*/.*"
+      selection="%DEFAULTWEB{default="%IF{"context ClassificationPluginEnabled" then="_ClassificationTemplate" else="_default"}%"}%" 
+      separator="$n"
+    }%
+  </select>
+  <div class="foswikiFormDescription">
+    %MAKETEXT{"Select a TemplateWeb which you want the new web to be based on."}%
+  </div>
+</div>%TMPL:END%
+

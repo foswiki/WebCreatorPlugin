@@ -1,0 +1,144 @@
+%META:TOPICINFO{author="micha" comment="reprev" date="1599053114" format="1.1" reprev="4" version="4"}%
+---+!! %TOPIC%
+%FORMFIELD{"Description"}%
+
+%TOC%
+
+---++ Description
+
+This plugin extends the basic way of the Foswiki core to create webs, while circumventing some of the more arcane
+features that are more of a burden than useful:
+
+   1 support for AUTOINC for webs similar to topics
+   1 ease way to create subwebs
+   1 configure web access rights as part of the web creation process
+   1 populate meta data of <nop>WebHome, i.e. set formfield values
+   1 allow to copy a template web into an already existing web 
+   1 patch <nop>WebPreferences instead of just appending more preferences to it
+   1 perl api to register plugin handlers to be called before and after a web has been created
+   1 directly redirect to the newly created web
+   1 jsonrpc interfaces to script creating webs
+
+---++ JSON-RPC API
+
+The basic functionality of !%TOPIC% is made available using a [[Foswiki:Extensions/JsonRPCContrib][JSON-RPC]] handler called =WebCreatorPlugin.create=. 
+
+| *Parameter* | *Description* | *Default* |
+| =newweb= | name of the target web |  |
+| =parentweb= | name of the parent web which the target web is a subweb of | |
+| =templateweb= | name of the template web | _default |
+| =overwrite= | boolean flag to optionally override an already existing target web | off | 
+| =dry= | boolean flag to simulate web creation; if enabled no actual web is created | off |
+| =&lt;web-preference-name>= | !WebPreference settings may be specified using all upper case parameters, such as =WEBSUMMARY=, =ALLOWWEBVIEW=, =DENYWEBVIEW=, =SOMESETTING= and the like | |
+| =&lt;formfield-name>=  | any additional parameter provided may be used to populate the !DataForm attached to the !WebHome topic. | |
+
+---++ Plugin API
+
+The !%TOPIC% allows third party plugins to hook into the web creation process by registering an approriate handler.
+
+   * =Foswiki::Plugins::WebCreatorPlugin::registerBeforeCreateWebHandler=: handlers are called before the new web is created
+   * =Foswiki::Plugins::WebCreatorPlugin::registerAfterCreateWebHandler=: handlers are called after the new web has been created
+
+Handlers will be called with the =$parameter= hash of all settings provided to the json-rpc call.
+
+---++ Skin integration
+
+When using [[Foswiki:Extensions/PatternSkin]] you might use the [[%SCRIPTURLPATH{view}%/%WEB%/%TOPIC%?template=newweb][newweb]] template 
+to render an appropriate dialog.
+
+[[Foswiki:Extensions/NatSkin][NatSkin]] comes with a modal dialog of its own available in the Admin dropdown menu at the top of the page.
+
+Note that both of these interfaces only provide access to the standard features creating webs in Foswiki. The more advanced ones must
+be implemented as a derivation of the =newweb.tmpl= template. The form may be extended by defining the =newweb::moresettingsstep= definition or
+by extending the =newweb::start= or =newweb::end= definitions.
+
+<verbatim class="tml">
+%TMPL:INCLUDE{"newwweb"}%
+%TMPL:DEF{"moresetingsstep"}%%{}%
+<input type="hidden" name="MOREWEBPREFERENCES1" value="..." />
+<input type="hidden" name="MOREWEBPREFERENCES2" value="..." />
+<input type="hidden" name="MOREWEBPREFERENCES3" value="..." />
+...
+<input type="hidden" name="ALLOWWEBVIEW" value="..." />
+<input type="hidden" name="DENYWEBVIEW" value="..." />
+...
+<input type="hidden" name="FormFieldName1" value="..." />
+<input type="hidden" name="FormFieldName2" value="..." />
+<input type="hidden" name="FormFieldName3" value="..." />
+...
+%{}%%END%
+%TMPL:END%
+</verbatim>
+
+---++ Low-level form structure
+
+Sometimes you might want to implement a new web form yourself instead of using the =newweb.tmpl= template directly.
+The basic form structure looks like this:
+
+<verbatim class="tml">
+<form class="jqAjaxForm" action="%SCRIPTURLPATH{"jsonrpc"}%/WebCreatorPlugin/create" method="post">
+   *Web name*:
+   <input name="newweb" class="foswikiInputField required" type="text" size="60" />
+
+   *Summary*
+   <input type="text" class="foswikiInputField" name="WEBSUMMARY" size="60" />  
+
+   *Parent web*:
+   <select name="parentweb" class="jqSelect2" data-width="27em" data-allow-clear="true" data-placeholder="%MAKETEXT{"none"}%" size="1">
+      <option></option>
+      %FLEXWEBLIST{ 
+         format="<option $marker>$web</option>" 
+         marker="selected"
+         webs="public" 
+         exclude="Applications.*"
+         separator="$n"
+      }%
+  </select>
+
+   *Template web*:
+   <select name="templateweb" class="jqSelect2" data-width="27em">
+      %FLEXWEBLIST{ 
+         format="<option $marker>$name</option>" 
+         marker="selected"
+         webs="webtemplate" 
+         include="_.*"
+         exclude=".*/.*"
+         separator="$n"
+      }%
+   </select>
+
+   <!-- additional preferences, formfield values and acls -->
+   <input type="hidden" name="MOREWEBPREFERENCES1" value="..." />
+   <input type="hidden" name="MOREWEBPREFERENCES2" value="..." />
+   <input type="hidden" name="MOREWEBPREFERENCES3" value="..." />
+   <input type="hidden" name="ALLOWWEBVIEW" value="..." />
+   <input type="hidden" name="DENYWEBVIEW" value="..." />
+   <input type="hidden" name="FormFieldName1" value="..." />
+   <input type="hidden" name="FormFieldName2" value="..." />
+   <input type="hidden" name="FormFieldName3" value="..." />
+
+  <input type="submit" class="foswikiSubmit" value="Submit" />
+</form>%JQREQUIRE{"select2, ajaxform"}%
+</verbatim>
+
+---++ Installation Instructions
+%$INSTALL_INSTRUCTIONS%
+
+---++ Dependencies
+%$DEPENDENCIES%
+
+---++ Change History
+
+%TABLE{columnwidths="7em" tablewidth="100%"}%
+| 15 Oct 2020 | initial release |
+
+%META:FORM{name="PackageForm"}%
+%META:FIELD{name="Author" title="Author" value="Michael Daum"}%
+%META:FIELD{name="Version" title="Version" value="%25$VERSION%25"}%
+%META:FIELD{name="Release" title="Release" value="%25$RELEASE%25"}%
+%META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
+%META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%25$ROOTMODULE%25"}%
+%META:FIELD{name="Copyright" title="Copyright" value="2019-2020, Michael Daum, All Rights Reserved"}%
+%META:FIELD{name="License" title="License" value="GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]])"}%
+%META:FIELD{name="Home" title="Home" value="http://foswiki.org/Extensions/%25$ROOTMODULE%25"}%
+%META:FIELD{name="Support" title="Support" value="http://foswiki.org/Support/%25$ROOTMODULE%25"}%

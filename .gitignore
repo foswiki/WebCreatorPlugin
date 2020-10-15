@@ -1,0 +1,10 @@
+*,v
+*.swp
+**~
+/WebCreatorPlugin.md5
+/WebCreatorPlugin.sha1
+/WebCreatorPlugin.tgz
+/WebCreatorPlugin.txt
+/WebCreatorPlugin.zip
+/WebCreatorPlugin_installer
+/WebCreatorPlugin_installer.pl

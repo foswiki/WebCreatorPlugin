@@ -1,0 +1,80 @@
+# Foswiki translation for Japanese
+# Translators:
+#   Foswiki:Main/KenYuminaga, 2008
+msgid ""
+msgstr ""
+"Project-Id-Version: Foswiki $Id\n"
+"Report-Msgid-Bugs-To: foswiki-svn@lists.sourceforge.net\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2010-09-13 04:19+0000\n"
+"Last-Translator: Joel DeJesus <dejesus.joel@gmail.com>\n"
+"Language-Team: Foswiki Japanese team\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 1.1.0\n"
+"X-Poedit-Country: JAPAN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: templates/newweb.tmpl:21
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: templates/newweb.tmpl:12
+#, fuzzy
+msgid "Creating Web"
+msgstr "新ウェブを作成します"
+
+#: templates/newweb.tmpl:37
+#, fuzzy
+msgid "Enter a short description of the web."
+msgstr "このトピックのテキストを編集します"
+
+#: templates/newweb.tmpl:42
+#, fuzzy
+msgid "Parent web"
+msgstr "親ウェブ"
+
+#: templates/newweb.tmpl:73
+msgid "Select a TemplateWeb which you want the new web to be based on."
+msgstr ""
+
+#: templates/newweb.tmpl:29
+msgid "Specify a short name to avoid long URLs."
+msgstr ""
+
+#: templates/newweb.tmpl:55
+msgid "Specify the parent web that the new web will be a subweb off."
+msgstr ""
+
+#: templates/newweb.tmpl:20
+msgid "Submit"
+msgstr "確定"
+
+#: templates/newweb.tmpl:34
+#, fuzzy
+msgid "Summary"
+msgstr "概要"
+
+#: templates/newweb.tmpl:60
+#, fuzzy
+msgid "Template web"
+msgstr "ウェブをリネームします"
+
+#: templates/newweb.tmpl:28
+msgid ""
+"The name must start with an upper case letter, followed by upper or lower "
+"case letters or numbers."
+msgstr ""
+
+#: templates/newweb.tmpl:25
+#, fuzzy
+msgid "Web name"
+msgstr "リネーム"
+
+#: data/System/WebCreatorPlugin.txt:87 templates/newweb.tmpl:43
+#, fuzzy
+msgid "none"
+msgstr "(無)"

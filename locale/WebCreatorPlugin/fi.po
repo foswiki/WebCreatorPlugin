@@ -1,0 +1,76 @@
+# Foswiki translation for finnish
+# Translators:
+#   Heikki Toivonen <heikki@osafoundation.org>
+#   Tapio Salonsaari <take@nerd.fi> 2009
+msgid ""
+msgstr ""
+"Project-Id-Version: Foswiki $Id\n"
+"Report-Msgid-Bugs-To: foswiki-svn@lists.sourceforge.net\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2010-07-15 14:07+0200\n"
+"Last-Translator: ghfg <sdfsd@gmail.com>\n"
+"Language-Team: FINNISH <heikki@osafoundation.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Finnish\n"
+
+#: templates/newweb.tmpl:21
+msgid "Cancel"
+msgstr "Peru"
+
+#: templates/newweb.tmpl:12
+msgid "Creating Web"
+msgstr ""
+
+#: templates/newweb.tmpl:37
+#, fuzzy
+msgid "Enter a short description of the web."
+msgstr "Muokkaa tämän aiheen tekstiä"
+
+#: templates/newweb.tmpl:42
+#, fuzzy
+msgid "Parent web"
+msgstr "Uusi yläverkko:"
+
+#: templates/newweb.tmpl:73
+msgid "Select a TemplateWeb which you want the new web to be based on."
+msgstr ""
+
+#: templates/newweb.tmpl:29
+msgid "Specify a short name to avoid long URLs."
+msgstr ""
+
+#: templates/newweb.tmpl:55
+msgid "Specify the parent web that the new web will be a subweb off."
+msgstr ""
+
+#: templates/newweb.tmpl:20
+msgid "Submit"
+msgstr "Lähetä"
+
+#: templates/newweb.tmpl:34
+#, fuzzy
+msgid "Summary"
+msgstr "Yhteenvedot"
+
+#: templates/newweb.tmpl:60
+msgid "Template web"
+msgstr ""
+
+#: templates/newweb.tmpl:28
+msgid ""
+"The name must start with an upper case letter, followed by upper or lower "
+"case letters or numbers."
+msgstr ""
+
+#: templates/newweb.tmpl:25
+#, fuzzy
+msgid "Web name"
+msgstr "Nimeä uudelleen"
+
+#: data/System/WebCreatorPlugin.txt:87 templates/newweb.tmpl:43
+#, fuzzy
+msgid "none"
+msgstr "(tyhjä)"

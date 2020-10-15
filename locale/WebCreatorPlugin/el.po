@@ -1,0 +1,78 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Foswiki Greek Translation\n"
+"Report-Msgid-Bugs-To: foswiki-svn@lists.sourceforge.net\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2015-06-30 14:03+0200\n"
+"Last-Translator: Lieven L. Litaer <qephom@gmx.de>\n"
+"Language-Team: Greek <http://translate.foswiki.org/projects/foswiki/"
+"distribution-master/el/>\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.1\n"
+"X-Poedit-Language: Greek\n"
+"X-Poedit-Country: GREECE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: templates/newweb.tmpl:21
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+#: templates/newweb.tmpl:12
+msgid "Creating Web"
+msgstr ""
+
+#: templates/newweb.tmpl:37
+#, fuzzy
+msgid "Enter a short description of the web."
+msgstr "Επεξεργασία αυτού του κειμένου του θέματος"
+
+#: templates/newweb.tmpl:42
+#, fuzzy
+msgid "Parent web"
+msgstr "Νέος γονεϊκός ιστός:"
+
+#: templates/newweb.tmpl:73
+msgid "Select a TemplateWeb which you want the new web to be based on."
+msgstr ""
+
+#: templates/newweb.tmpl:29
+msgid "Specify a short name to avoid long URLs."
+msgstr ""
+
+#: templates/newweb.tmpl:55
+msgid "Specify the parent web that the new web will be a subweb off."
+msgstr ""
+
+#: templates/newweb.tmpl:20
+msgid "Submit"
+msgstr "Υποβολή"
+
+#: templates/newweb.tmpl:34
+#, fuzzy
+msgid "Summary"
+msgstr "Περιλήψεις"
+
+#: templates/newweb.tmpl:60
+msgid "Template web"
+msgstr ""
+
+#: templates/newweb.tmpl:28
+msgid ""
+"The name must start with an upper case letter, followed by upper or lower "
+"case letters or numbers."
+msgstr ""
+
+#: templates/newweb.tmpl:25
+#, fuzzy
+msgid "Web name"
+msgstr "Μετονομασία"
+
+#: data/System/WebCreatorPlugin.txt:87 templates/newweb.tmpl:43
+#, fuzzy
+msgid "none"
+msgstr "(καμία)"
+

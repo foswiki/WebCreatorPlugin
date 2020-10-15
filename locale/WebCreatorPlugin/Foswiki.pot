@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/newweb.tmpl:21
+msgid "Cancel"
+msgstr ""
+
+#: templates/newweb.tmpl:12
+msgid "Creating Web"
+msgstr ""
+
+#: templates/newweb.tmpl:37
+msgid "Enter a short description of the web."
+msgstr ""
+
+#: templates/newweb.tmpl:42
+msgid "Parent web"
+msgstr ""
+
+#: templates/newweb.tmpl:73
+msgid "Select a TemplateWeb which you want the new web to be based on."
+msgstr ""
+
+#: templates/newweb.tmpl:29
+msgid "Specify a short name to avoid long URLs."
+msgstr ""
+
+#: templates/newweb.tmpl:55
+msgid "Specify the parent web that the new web will be a subweb off."
+msgstr ""
+
+#: templates/newweb.tmpl:20
+msgid "Submit"
+msgstr ""
+
+#: templates/newweb.tmpl:34
+msgid "Summary"
+msgstr ""
+
+#: templates/newweb.tmpl:60
+msgid "Template web"
+msgstr ""
+
+#: templates/newweb.tmpl:28
+msgid ""
+"The name must start with an upper case letter, followed by upper or lower "
+"case letters or numbers."
+msgstr ""
+
+#: templates/newweb.tmpl:25
+msgid "Web name"
+msgstr ""
+
+#: data/System/WebCreatorPlugin.txt:87 templates/newweb.tmpl:43
+msgid "none"
+msgstr ""
