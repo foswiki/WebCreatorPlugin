@@ -20,7 +20,7 @@ msgstr ""
 
 #: templates/newweb.tmpl:21
 msgid "Cancel"
-msgstr "Rinuncia"
+msgstr "Annullare"
 
 #: templates/newweb.tmpl:12
 msgid "Creating Web"

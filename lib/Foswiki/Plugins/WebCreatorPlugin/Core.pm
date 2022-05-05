@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, https://foswiki.org/
 #
-# WebCreatorPlugin is Copyright (C) 2019-2020 Michael Daum http://michaeldaumconsulting.com
+# WebCreatorPlugin is Copyright (C) 2019-2022 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -59,6 +59,7 @@ sub jsonRpcCreate {
   _writeDebug("wikiName=$wikiName");
 
   my $dry = Foswiki::Func::isTrue($request->param("dry"), 0);
+  _writeDebug("dry run") if $dry;
 
   my $templateWeb = $request->param("templateweb") || "_default";
   _writeDebug("templateWeb=$templateWeb");
@@ -97,7 +98,7 @@ sub jsonRpcCreate {
     $newWeb = sprintf("$pre%0${pad}d$post", $start);
   }
 
-  throw Error::Simple("invalid web name") unless Foswiki::Func::isValidWebName($newWeb);
+  throw Error::Simple("invalid web name") unless Foswiki::Func::isValidWebName($newWeb, 1);
 
   my $overwrite = Foswiki::Func::isTrue($request->param("overwrite"), 0);
   _writeDebug("overwrite=$overwrite");
@@ -109,18 +110,13 @@ sub jsonRpcCreate {
     ALLOWWEBVIEW => $wikiName,
     ALLOWWEBCHANGE => $wikiName,
     ALLOWWEBRENAME => $wikiName,
-    ALLOWTOPICCHANGE => $wikiName,
-    ALLOWTOPICRENAME => $wikiName,
+    ALLOWTOPICCHANGE => $wikiName
   };
 
   foreach my $key (keys %{$request->params()}) {
     next unless $key =~ /^[A-Z][A-Z_]*$/;
     my $v = $request->param($key);
     $webPrefs->{$key} = $v;
-  }
-
-  if (TRACE) {
-    _writeDebug("webPref: $_=$webPrefs->{$_}") foreach sort keys %$webPrefs;
   }
 
   my $params = {
@@ -130,9 +126,19 @@ sub jsonRpcCreate {
     dry => $dry
   };
 
+  my $error;
+
   # call index topic handlers
   $this->callBeforeCreaterWebHandler($params);
-  $this->copyWeb($params);
+
+  try {
+    $this->copyWeb($params);
+  } catch Error with {
+    $error = shift;
+  };
+
+  throw Error::Simple($error) if $error;
+
   $this->callAfterCreaterWebHandler($params);
 
   # return url of newly create web
@@ -148,10 +154,15 @@ sub jsonRpcCreate {
 #   dry => ...
 # }
 sub copyWeb {
-  my ($this, $params) = @_;
+  my ($this, $params, $seen) = @_;
+
 
   $params->{source} =~ s/\./\//g;
   $params->{target} =~ s/\./\//g;
+  $seen ||= {};
+
+  return if $seen->{$params->{source}};
+  $seen->{$params->{source}} = 1;
 
   _writeDebug("called copyWeb($params->{source}, $params->{target})");
 
@@ -186,7 +197,7 @@ sub copyWeb {
     }
 
     # store other meta in WebHome
-    $this->populateMetaFromQuery($obj) if $topic eq $Foswiki::cfg{HomeTopicName} && !$params->{dry};
+    $this->populateMetaFromQuery($obj) if $topic eq $Foswiki::cfg{HomeTopicName};
 
     $obj->save( # vs saveAs
       web => $params->{target},
@@ -215,22 +226,29 @@ sub copyWeb {
 
   # patch WebPreferences
   if ($params->{prefs}) {
-    my $prefsTopicObject = Foswiki::Meta->load($this->{session}, $params->{target}, $Foswiki::cfg{WebPrefsTopicName});
-    my $text = $prefsTopicObject->text();
-    unless (defined $text) {
-      (undef, $text) = Foswiki::Func::readTopic($params->{source}, $Foswiki::cfg{WebPrefsTopicName});
-    }
+    _writeDebug("processing WebPreferences");
+    my ($sourcePrefsObj, $text) = Foswiki::Func::readTopic($params->{source}, $Foswiki::cfg{WebPrefsTopicName});
+    my $targetPrefsObj = Foswiki::Meta->load($this->{session}, $params->{target}, $Foswiki::cfg{WebPrefsTopicName});
+
+    $targetPrefsObj->copyFrom($sourcePrefsObj);
 
     my @bottomText = ();
     foreach my $key (keys %{$params->{prefs}}) {
       if (defined($params->{prefs}->{$key})) {
+
         if ($text =~ s/^((?:\t|   )+\*\s+)#?Set\s+$key\s*=.*?$/$1Set $key = $params->{prefs}->{$key}/gm) {
-          _writeDebug("patching $key");
+          _writeDebug("patching text $key");
           # found in template
         } else {
-          _writeDebug("appending $key");
-          # not found, append it
-          push @bottomText, "   * Set $key = $params->{prefs}->{$key}";
+          my $prefMeta = $targetPrefsObj->get("PREFERENCE", $key);
+          if ($prefMeta) {
+            _writeDebug("patching meta $key");
+            $prefMeta->{value} = $params->{prefs}->{$key};
+          } else {
+            _writeDebug("appending $key");
+            # not found, append it
+            push @bottomText, "   * Set $key = $params->{prefs}->{$key}";
+          }
         }
       }
     }
@@ -240,9 +258,12 @@ sub copyWeb {
       $text .= join("\n", @bottomText)."\n";
     }
 
-    #_writeDebug("WebPreferences:\n$text");
-    $prefsTopicObject->text($text);
-    $prefsTopicObject->save() unless $params->{dry};
+    $targetPrefsObj->text($text);
+    $targetPrefsObj->save() unless $params->{dry};
+
+    if (TRACE) {
+      _writeDebug("WebPreferences:".$targetPrefsObj->getEmbeddedStoreForm());
+    }
   }
 
   # update dbcache
@@ -250,6 +271,18 @@ sub copyWeb {
     _writeDebug("updating dbcache");
     require Foswiki::Plugins::DBCachePlugin;
     Foswiki::Plugins::DBCachePlugin::getDB($params->{target}, 2) unless $params->{dry};
+  }
+
+  my $sit = $sourceObj->eachWeb();
+  while ( $sit->hasNext() ) {
+    my $subWeb = $sit->next();
+    my %subParams = %{$params};
+    $subParams{source} = $params->{source} . '.' . $subWeb;
+    $subParams{target} = $params->{target} . '.' . $subWeb;
+
+    $this->callBeforeCreaterWebHandler(\%subParams);
+    $this->copyWeb(\%subParams, $seen);
+    $this->callAfterCreaterWebHandler(\%subParams);
   }
 }
 
@@ -261,8 +294,11 @@ sub populateMetaFromQuery {
   my $request = Foswiki::Func::getRequestObject();
 
   my $formName = $obj->getFormName();
+  return unless $formName;
+
+  _writeDebug("formName=$formName");
   my ($web, $topic) = Foswiki::Func::normalizeWebTopicName($obj->web, $formName);
-  my $formDef = new Foswiki::Form($this->{session}, $web, $topic);
+  my $formDef = Foswiki::Form->new($this->{session}, $web, $topic);
 
   $formDef->getFieldValuesFromQuery($request, $obj);
 }
