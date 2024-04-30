@@ -21,7 +21,7 @@ features that are more of a burden than useful:
 
 ---++ JSON-RPC API
 
-The basic functionality of !%TOPIC% is made available using a [[Foswiki:Extensions/JsonRPCContrib][JSON-RPC]] handler called =WebCreatorPlugin.create=. 
+The basic functionality of !%TOPIC% is made available using a [[https://foswiki.org/Extensions/JsonRPCContrib][JSON-RPC]] handler called =WebCreatorPlugin.create=. 
 
 | *Parameter* | *Description* | *Default* |
 | =newweb= | name of the target web |  |
@@ -43,10 +43,10 @@ Handlers will be called with the =$parameter= hash of all settings provided to t
 
 ---++ Skin integration
 
-When using [[Foswiki:Extensions/PatternSkin]] you might use the [[%SCRIPTURLPATH{view}%/%WEB%/%TOPIC%?template=newweb][newweb]] template 
+When using [[https://foswiki.org/Extensions/PatternSkin]] you might use the [[%SCRIPTURLPATH{view}%/%WEB%/%TOPIC%?template=newweb][newweb]] template 
 to render an appropriate dialog.
 
-[[Foswiki:Extensions/NatSkin][NatSkin]] comes with a modal dialog of its own available in the Admin dropdown menu at the top of the page.
+[[https://foswiki.org/Extensions/NatSkin][NatSkin]] comes with a modal dialog of its own available in the Admin dropdown menu at the top of the page.
 
 Note that both of these interfaces only provide access to the standard features creating webs in Foswiki. The more advanced ones must
 be implemented as a derivation of the =newweb.tmpl= template. The form may be extended by defining the =newweb::moresettingsstep= definition or
@@ -121,6 +121,49 @@ The basic form structure looks like this:
 </form>%JQREQUIRE{"select2, ajaxform"}%
 </verbatim>
 
+---++ <nop>QMPlugin integration
+
+%TOPIC% adds a new workflow command =createWeb= to <nop>QMPlugin so that this command can be used in workflows. That is you may create
+a web as part of a transition in a web. Example:
+
+<verbatim>
+---++ Edges
+| *From* | *Action* | *To* | *Command* |
+...
+| approved | start project | running | createWeb("PAUTOINC001" template="_ProjectTemplate" parent="Projects") |
+...
+</verbatim>
+
+This will create P... webs under the Projects web called Projects.P001, Projects.P002, etc whenever
+the action "start project" is performed in the workflow passing from "approved" to "running".
+
+Parameters are:
+
+| *Parameters* | *Description* | *Default* |
+| ="..."=, =newweb="..."= | the target web to be created, may contain the AUTOINC which is expanded as required creating counting web names (mandatory) | |
+| =tempalte="..."=, =templateweb="..."= | a template web | _default |
+| =parent="....", =parentweb="..."= | parent web, if undefined a root level web will be created | |
+| =overwrite="on/off"= | boolean parameter letting you overwrite any existing web (use with caution) | off |
+| =dry="on/off"= | boolean to perform a "dry" operation if activated; this is useful for testing | off |
+| =redirect="on/off"= | boolean if enabled will redirect to the newly created web | off |
+| =PARAMETER="value"= | any (uppercase) parameter will be stored into the target web's WebPreferences | |
+| =&lt;FormfieldName>="value"= | if the <nop>WebHome topic has got a form attached to it then any formfield values found in the query will be stored there | |
+
+The newly created web will have access rights ALLOWWEBVIEW, ALLOWWEBCHANGE, ALLOWWEBRENAME and ALLOWTOPICCHANGE set to the
+user that created the web unless specified otherwise using parameters such as in:
+
+<verbatim>
+createWeb("PAUTOINC001" 
+  template="_ProjectTemplate" 
+  parent="Projects" 
+  ALLOWWEBVIEW="ProjectsGroup" 
+  ALLOWWEBCHANGE="ProjectsGroup") 
+</verbatim>
+
+(... line breaks added for clarity)
+
+
+
 ---++ Installation Instructions
 %$INSTALL_INSTRUCTIONS%
 
@@ -130,6 +173,8 @@ The basic form structure looks like this:
 ---++ Change History
 
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  16 Nov 2022 | don't hardcode defaults for web acls |
+|  24 May 2022 | add command =createWeb()= into <nop>QMPlugin workflows |
 |  05 May 2022 | add support for template webs with subwebs in it |
 |  15 Oct 2020 | initial release |
 

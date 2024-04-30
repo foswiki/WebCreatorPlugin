@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, https://foswiki.org/
 #
-# WebCreatorPlugin is Copyright (C) 2019-2022 Michael Daum http://michaeldaumconsulting.com
+# WebCreatorPlugin is Copyright (C) 2019-2024 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -37,7 +37,7 @@ sub new {
   return $this;
 }
 
-sub DESTROY {
+sub finish {
   my $this = shift;
 
   undef $this->{session};
@@ -74,7 +74,6 @@ sub jsonRpcCreate {
 
   if ($parentWeb) {
     throw Error::Simple("parent web does not exist") unless Foswiki::Func::webExists($parentWeb);
-    #my ( $type, $user, $text, $inTopic, $inWeb, $meta ) = @_;
     throw Error::Simple("access denied to parent web") unless Foswiki::Func::checkAccessPermission("VIEW", $wikiName, undef, undef, $parentWeb);
 
     $newWeb = "$parentWeb.$newWeb";
@@ -107,10 +106,10 @@ sub jsonRpcCreate {
 
   # collect web preferences
   my $webPrefs = {
-    ALLOWWEBVIEW => $wikiName,
-    ALLOWWEBCHANGE => $wikiName,
-    ALLOWWEBRENAME => $wikiName,
-    ALLOWTOPICCHANGE => $wikiName
+#   ALLOWWEBVIEW => $wikiName,
+#   ALLOWWEBCHANGE => $wikiName,
+#   ALLOWWEBRENAME => $wikiName,
+#   ALLOWTOPICCHANGE => $wikiName
   };
 
   foreach my $key (keys %{$request->params()}) {
@@ -197,7 +196,12 @@ sub copyWeb {
     }
 
     # store other meta in WebHome
-    $this->populateMetaFromQuery($obj) if $topic eq $Foswiki::cfg{HomeTopicName};
+    if ($topic eq $Foswiki::cfg{HomeTopicName}) {
+      $this->populateMeta($params, $obj);
+    }
+
+    # Item15136: need to set this early enough so that any beforeSaveHandler gets the right web ... required for Foswiki < 2.1.8
+    $obj->{_web} = $params->{target}; # 
 
     $obj->save( # vs saveAs
       web => $params->{target},
@@ -234,20 +238,22 @@ sub copyWeb {
 
     my @bottomText = ();
     foreach my $key (keys %{$params->{prefs}}) {
-      if (defined($params->{prefs}->{$key})) {
+      next if $key =~ /^_/;
+      my $val = $params->{prefs}{$key};
+      if (defined($val) && $val ne "") {
 
-        if ($text =~ s/^((?:\t|   )+\*\s+)#?Set\s+$key\s*=.*?$/$1Set $key = $params->{prefs}->{$key}/gm) {
+        if ($text =~ s/^((?:\t|   )+\*\s+)#?Set\s+$key\s*=.*?$/$1Set $key = $val/gm) {
           _writeDebug("patching text $key");
           # found in template
         } else {
           my $prefMeta = $targetPrefsObj->get("PREFERENCE", $key);
           if ($prefMeta) {
             _writeDebug("patching meta $key");
-            $prefMeta->{value} = $params->{prefs}->{$key};
+            $prefMeta->{value} = $val;
           } else {
             _writeDebug("appending $key");
             # not found, append it
-            push @bottomText, "   * Set $key = $params->{prefs}->{$key}";
+            push @bottomText, "   * Set $key = $val";
           }
         }
       }
@@ -261,9 +267,9 @@ sub copyWeb {
     $targetPrefsObj->text($text);
     $targetPrefsObj->save() unless $params->{dry};
 
-    if (TRACE) {
-      _writeDebug("WebPreferences:".$targetPrefsObj->getEmbeddedStoreForm());
-    }
+    #if (TRACE) {
+    #  _writeDebug("WebPreferences:".$targetPrefsObj->getEmbeddedStoreForm());
+    #}
   }
 
   # update dbcache
@@ -286,10 +292,10 @@ sub copyWeb {
   }
 }
 
-sub populateMetaFromQuery {
-  my ($this, $obj) = @_;
+sub populateMeta {
+  my ($this, $params, $obj) = @_;
 
-  _writeDebug("called populateMetaFromQuery for ".$obj->topic);
+  _writeDebug("called populateMeta for ".$obj->topic);
 
   my $request = Foswiki::Func::getRequestObject();
 
@@ -299,6 +305,18 @@ sub populateMetaFromQuery {
   _writeDebug("formName=$formName");
   my ($web, $topic) = Foswiki::Func::normalizeWebTopicName($obj->web, $formName);
   my $formDef = Foswiki::Form->new($this->{session}, $web, $topic);
+
+  foreach my $fieldDef (@{$formDef->getFields}) {
+    my $name = $fieldDef->{name};
+    _writeDebug("... testing params for $name");
+    my $val = $params->{$name};
+    if (defined $val) {
+      _writeDebug("... found formfield value in params: $val");
+      $request->param($name, $val);
+    } else {
+      _writeDebug("... not found");
+    }
+  }
 
   $formDef->getFieldValuesFromQuery($request, $obj);
 }

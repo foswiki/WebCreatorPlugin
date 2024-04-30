@@ -2,6 +2,7 @@
 data/System/WebCreatorPlugin.txt 0644
 lib/Foswiki/Plugins/WebCreatorPlugin/Core.pm 0644
 lib/Foswiki/Plugins/WebCreatorPlugin/DEPENDENCIES 0644
+lib/Foswiki/Plugins/WebCreatorPlugin/Handler/CreateWeb.pm 0644
 lib/Foswiki/Plugins/WebCreatorPlugin.pm 0644
 locale/WebCreatorPlugin/bg.po 0644
 locale/WebCreatorPlugin/cs.po 0644
