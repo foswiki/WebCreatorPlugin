@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, https://foswiki.org/
 #
-# WebCreatorPlugin is Copyright (C) 2019-2024 Michael Daum http://michaeldaumconsulting.com
+# WebCreatorPlugin is Copyright (C) 2019-2026 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -163,7 +163,7 @@ sub copyWeb {
   return if $seen->{$params->{source}};
   $seen->{$params->{source}} = 1;
 
-  _writeDebug("called copyWeb($params->{source}, $params->{target})");
+  _writeDebug("called copyWeb(source=$params->{source}, target=$params->{target})");
 
   my $sourceObj = Foswiki::Meta->new($this->{session}, $params->{source});
   my $targetObj = Foswiki::Meta->new($this->{session}, $params->{target});
@@ -280,8 +280,12 @@ sub copyWeb {
   }
 
   my $sit = $sourceObj->eachWeb();
+  my $sourceWeb = $sourceObj->web;
+
   while ( $sit->hasNext() ) {
     my $subWeb = $sit->next();
+    $subWeb =~ s/^$sourceWeb.//;
+
     my %subParams = %{$params};
     $subParams{source} = $params->{source} . '.' . $subWeb;
     $subParams{target} = $params->{target} . '.' . $subWeb;

@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="micha" comment="reprev" date="1599053114" format="1.1" reprev="4" version="4"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1773855851" format="1.1"  version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -141,7 +141,7 @@ Parameters are:
 
 | *Parameters* | *Description* | *Default* |
 | ="..."=, =newweb="..."= | the target web to be created, may contain the AUTOINC which is expanded as required creating counting web names (mandatory) | |
-| =tempalte="..."=, =templateweb="..."= | a template web | _default |
+| =template="..."=, =templateweb="..."= | a template web | _default |
 | =parent="....", =parentweb="..."= | parent web, if undefined a root level web will be created | |
 | =overwrite="on/off"= | boolean parameter letting you overwrite any existing web (use with caution) | off |
 | =dry="on/off"= | boolean to perform a "dry" operation if activated; this is useful for testing | off |
@@ -173,6 +173,7 @@ createWeb("PAUTOINC001"
 ---++ Change History
 
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  18 Mar 2026 | fixed copying hierarchical template webs |
 |  16 Nov 2022 | don't hardcode defaults for web acls |
 |  24 May 2022 | add command =createWeb()= into <nop>QMPlugin workflows |
 |  05 May 2022 | add support for template webs with subwebs in it |
@@ -184,7 +185,7 @@ createWeb("PAUTOINC001"
 %META:FIELD{name="Release" title="Release" value="%25$RELEASE%25"}%
 %META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
 %META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%25$ROOTMODULE%25"}%
-%META:FIELD{name="Copyright" title="Copyright" value="2019-2022, Michael Daum, All Rights Reserved"}%
+%META:FIELD{name="Copyright" title="Copyright" value="2019-2026, Michael Daum, All Rights Reserved"}%
 %META:FIELD{name="License" title="License" value="GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]])"}%
 %META:FIELD{name="Home" title="Home" value="http://foswiki.org/Extensions/%25$ROOTMODULE%25"}%
 %META:FIELD{name="Support" title="Support" value="http://foswiki.org/Support/%25$ROOTMODULE%25"}%

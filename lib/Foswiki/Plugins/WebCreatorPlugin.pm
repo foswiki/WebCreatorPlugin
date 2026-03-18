@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, https://foswiki.org/
 #
-# WebCreatorPlugin is Copyright (C) 2019-2024 Michael Daum http://michaeldaumconsulting.com
+# WebCreatorPlugin is Copyright (C) 2019-2026 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@ use warnings;
 use Foswiki::Func ();
 use Foswiki::Contrib::JsonRpcContrib ();
 
-our $VERSION = '3.10';
+our $VERSION = '3.20';
 our $RELEASE = '%$RELEASE%';
 our $SHORTDESCRIPTION = 'Flexible way to create new webs';
 our $LICENSECODE = '%$LICENSECODE%';
