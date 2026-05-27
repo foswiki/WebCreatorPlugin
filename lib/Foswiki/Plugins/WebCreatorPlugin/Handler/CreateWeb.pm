@@ -74,10 +74,7 @@ sub handle {
 
   throw Error::Simple("invalid web name") unless Foswiki::Func::isValidWebName($newWeb, 1);
 
-  my $overwrite = Foswiki::Func::isTrue($params->{overwrite}, 0);
-  _writeDebug("overwrite=$overwrite");
-
-  throw Error::Simple("web already exists") if !$overwrite && Foswiki::Func::webExists($newWeb);
+  throw Error::Simple("web already exists") if Foswiki::Func::webExists($newWeb);
 
   # collect web preferences
   my $webPrefs = {

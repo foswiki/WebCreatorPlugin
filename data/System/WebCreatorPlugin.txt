@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1773855851" format="1.1"  version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1779882626" format="1.1"  version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -27,7 +27,6 @@ The basic functionality of !%TOPIC% is made available using a [[https://foswiki.
 | =newweb= | name of the target web |  |
 | =parentweb= | name of the parent web which the target web is a subweb of | |
 | =templateweb= | name of the template web | _default |
-| =overwrite= | boolean flag to optionally override an already existing target web | off | 
 | =dry= | boolean flag to simulate web creation; if enabled no actual web is created | off |
 | =&lt;web-preference-name>= | !WebPreference settings may be specified using all upper case parameters, such as =WEBSUMMARY=, =ALLOWWEBVIEW=, =DENYWEBVIEW=, =SOMESETTING= and the like | |
 | =&lt;formfield-name>=  | any additional parameter provided may be used to populate the !DataForm attached to the !WebHome topic. | |
@@ -143,7 +142,6 @@ Parameters are:
 | ="..."=, =newweb="..."= | the target web to be created, may contain the AUTOINC which is expanded as required creating counting web names (mandatory) | |
 | =template="..."=, =templateweb="..."= | a template web | _default |
 | =parent="....", =parentweb="..."= | parent web, if undefined a root level web will be created | |
-| =overwrite="on/off"= | boolean parameter letting you overwrite any existing web (use with caution) | off |
 | =dry="on/off"= | boolean to perform a "dry" operation if activated; this is useful for testing | off |
 | =redirect="on/off"= | boolean if enabled will redirect to the newly created web | off |
 | =PARAMETER="value"= | any (uppercase) parameter will be stored into the target web's WebPreferences | |
@@ -173,6 +171,7 @@ createWeb("PAUTOINC001"
 ---++ Change History
 
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  27 May 2026 | removed overwrite flag for security reasons |
 |  18 Mar 2026 | fixed copying hierarchical template webs |
 |  16 Nov 2022 | don't hardcode defaults for web acls |
 |  24 May 2022 | add command =createWeb()= into <nop>QMPlugin workflows |

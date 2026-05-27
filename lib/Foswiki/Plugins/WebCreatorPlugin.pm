@@ -21,7 +21,7 @@ use warnings;
 use Foswiki::Func ();
 use Foswiki::Contrib::JsonRpcContrib ();
 
-our $VERSION = '3.20';
+our $VERSION = '3.30';
 our $RELEASE = '%$RELEASE%';
 our $SHORTDESCRIPTION = 'Flexible way to create new webs';
 our $LICENSECODE = '%$LICENSECODE%';
